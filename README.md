@@ -1,0 +1,1 @@
+A library manager to add and remove books, borrow books and ability to save progress.
