@@ -3,7 +3,7 @@
         "Title": "Treasure Hunter 1",
         "Author": "James Patterson",
         "Release Year": "2004",
-        "Is Borrowed": "No",
+        "Is Borrowed": "Yes",
         "Book ID": 111111
     },
     {
