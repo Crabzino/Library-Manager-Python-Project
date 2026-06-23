@@ -22,8 +22,8 @@ menu_options = """
                                         2. Add Book
                                         3. Search Book(By ID, By Title)
                                         4. Remove Book(By ID, By Title)
-                                        5. Borrow Book(By ID)
-                                        6. Return Book(BY ID)
+                                        5. Borrow Book(By ID or Title)
+                                        6. Return Book(By ID or Title)
                                         7. Save
                                         8. Exit
                                         9. View Borrow History
@@ -139,73 +139,84 @@ def title_remove():
 
        
 
-def borrow_book():
-    user_answer4 = input("Enter the 6 digit ID of the book you would like to borrow: ")
+def find_book_by_id_or_title(identifier):
+    identifier = identifier.strip()
+    if not identifier:
+        return None
 
-    if len(user_answer4) != 6 or not user_answer4.isdigit():
-        print("Invalid Input: Please enter a 6 digit ID")
+    if len(identifier) == 6 and identifier.isdigit():
+        book_id = int(identifier)
+        for book in books:
+            if book.book_id == book_id:
+                return book
+        return None
+
+    normalized_title = identifier.title()
+    for book in books:
+        if book.title.lower() == normalized_title.lower():
+            return book
+
+    return None
+
+
+def borrow_book():
+    user_answer4 = input("Enter the 6 digit ID or title of the book you would like to borrow: ")
+    book = find_book_by_id_or_title(user_answer4)
+
+    if book is None:
+        print("Book Not Found")
         return
 
-    book_id = int(user_answer4)
-    for book in books:
-        if book.book_id == book_id:
-            if book.is_borrowed == "Yes":
-                print("Book is already being borrowed, please choose another one")
-                return
+    if book.is_borrowed == "Yes":
+        print("Book is already being borrowed, please choose another one")
+        return
 
-            confirmation = input("Are you sure you would like to borrow the book? ").lower()
+    confirmation = input(f"Are you sure you would like to borrow '{book.title}'? ").lower()
 
-            if confirmation == "yes":
-                borrowed_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                book.mark_borrowed(borrowed_at)
+    if confirmation == "yes":
+        borrowed_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        book.mark_borrowed(borrowed_at)
 
-                history = load_borrow_history()
-                history = add_borrow_history(history, book.book_id, borrowed_at)
-                save_borrow_history(history)
-                return
+        history = load_borrow_history()
+        history = add_borrow_history(history, book.book_id, borrowed_at)
+        save_borrow_history(history)
+        return
 
-            if confirmation == "no":
-                print("Ok, the system will cancel this request")
-                return
+    if confirmation == "no":
+        print("Ok, the system will cancel this request")
+        return
 
-            print("Invalid option: Enter yes/no")
-            return
-
-    print("Book Not Found")
+    print("Invalid option: Enter yes/no")
     return
 
 
 def return_book():
-    user_answer5 = input("Enter the 6 digit ID of the book you would like to return: ")
-    if len(user_answer5) != 6 or not user_answer5.isdigit():
-        print("Invalid input: Please enter a 6 digit ID")
+    user_answer5 = input("Enter the 6 digit ID or title of the book you would like to return: ")
+    book = find_book_by_id_or_title(user_answer5)
+
+    if book is None:
+        print("Book Not Found")
         return
 
-    book_id = int(user_answer5)
-    for book in books:
-        if book.book_id == book_id:
-            if book.is_borrowed == "No":
-                print("Book is already in Library. Are you sure you that is the right book?")
-                return
+    if book.is_borrowed == "No":
+        print("Book is already in Library. Are you sure you that is the right book?")
+        return
 
-            confirmation2 = input("Are you sure you would like to return this book now?").lower()
-            if confirmation2 == "yes":
-                returned_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                book.mark_returned(returned_at)
+    confirmation2 = input(f"Are you sure you would like to return '{book.title}' now?").lower()
+    if confirmation2 == "yes":
+        returned_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        book.mark_returned(returned_at)
 
-                history = load_borrow_history()
-                history = add_return_history(history, book.book_id, returned_at)
-                save_borrow_history(history)
-                return
+        history = load_borrow_history()
+        history = add_return_history(history, book.book_id, returned_at)
+        save_borrow_history(history)
+        return
 
-            if confirmation2 == "no":
-                print("Ok, the system will cancel the request")
-                return
+    if confirmation2 == "no":
+        print("Ok, the system will cancel the request")
+        return
 
-            print("Invalid option, please enter a yes/no")
-            return
-
-    print("Book Not Found")
+    print("Invalid option, please enter a yes/no")
     return
 
 

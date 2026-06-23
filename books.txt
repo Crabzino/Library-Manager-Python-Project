@@ -3,10 +3,10 @@
         "Title": "Treasure Hunter 1",
         "Author": "James Patterson",
         "Release Year": "2004",
-        "Is Borrowed": "Yes",
+        "Is Borrowed": "No",
         "Book ID": 111111,
         "Borrow Time": null,
-        "Return Time": null
+        "Return Time": "2026-06-23 20:29:25"
     },
     {
         "Title": "Treasure Hunter 2",
