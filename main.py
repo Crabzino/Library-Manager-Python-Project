@@ -1,5 +1,13 @@
+from datetime import datetime
 from library import Book
-from file_manager import save_books, load_books
+from file_manager import (
+    save_books,
+    load_books,
+    load_borrow_history,
+    save_borrow_history,
+    add_borrow_history,
+    add_return_history,
+)
 
 books = load_books()
 
@@ -18,6 +26,7 @@ menu_options = """
                                         6. Return Book(BY ID)
                                         7. Save
                                         8. Exit
+                                        9. View Borrow History
 """
 
 
@@ -132,38 +141,38 @@ def title_remove():
 
 def borrow_book():
     user_answer4 = input("Enter the 6 digit ID of the book you would like to borrow: ")
-    
+
     if len(user_answer4) != 6 or not user_answer4.isdigit():
         print("Invalid Input: Please enter a 6 digit ID")
         return
-    
-    for book in books:
-        if book.book_id == int(user_answer4):
 
+    book_id = int(user_answer4)
+    for book in books:
+        if book.book_id == book_id:
             if book.is_borrowed == "Yes":
                 print("Book is already being borrowed, please choose another one")
                 return
-    
-    confirmation = input("Are you sure you would like to borrow the book? ").lower()
-    
-    if confirmation == "yes":
-        for book in books:
-            if book.book_id == int(user_answer4):
-                book.update_is_borrowed(int(user_answer4), "Yes")
+
+            confirmation = input("Are you sure you would like to borrow the book? ").lower()
+
+            if confirmation == "yes":
+                borrowed_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                book.mark_borrowed(borrowed_at)
+
+                history = load_borrow_history()
+                history = add_borrow_history(history, book.book_id, borrowed_at)
+                save_borrow_history(history)
                 return
-            
-            
-        print("Book Not Found")
-        return
 
-    if confirmation == "no":
-        print("Ok, the system will cancel this request")
-        return
-    
-    else:
-        print("Invalid option: Enter yes/no")
-   
+            if confirmation == "no":
+                print("Ok, the system will cancel this request")
+                return
 
+            print("Invalid option: Enter yes/no")
+            return
+
+    print("Book Not Found")
+    return
 
 
 def return_book():
@@ -171,38 +180,69 @@ def return_book():
     if len(user_answer5) != 6 or not user_answer5.isdigit():
         print("Invalid input: Please enter a 6 digit ID")
         return
-    
-    for book in books:
-        if book.book_id == int(user_answer5):
 
+    book_id = int(user_answer5)
+    for book in books:
+        if book.book_id == book_id:
             if book.is_borrowed == "No":
                 print("Book is already in Library. Are you sure you that is the right book?")
                 return
-    
-    confirmation2 = input("Are you sure you would like to return this book now?").lower()
-    if confirmation2 == "yes":
-        for book in books:
-            if book.book_id == int(user_answer5):
-                book.update_is_borrowed(int(user_answer5), "No") 
+
+            confirmation2 = input("Are you sure you would like to return this book now?").lower()
+            if confirmation2 == "yes":
+                returned_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                book.mark_returned(returned_at)
+
+                history = load_borrow_history()
+                history = add_return_history(history, book.book_id, returned_at)
+                save_borrow_history(history)
                 return
-            
-            
-        print("Book Not Found")
-        return
-    
-    if confirmation2 == "no":
-        print("Ok, the system will cancel the request")
-        return
-    
-    else:
-        print("Invalid option, please enter a yes/no")
+
+            if confirmation2 == "no":
+                print("Ok, the system will cancel the request")
+                return
+
+            print("Invalid option, please enter a yes/no")
+            return
+
+    print("Book Not Found")
+    return
 
 
+
+
+def view_borrow_history():
+    history = load_borrow_history()
+    if not history:
+        print("No borrow history found")
+        return
+
+    user_answer6 = input("Enter the 6 digit ID of the book you want to view history for: ")
+    if len(user_answer6) != 6 or not user_answer6.isdigit():
+        print("Invalid input: Please enter a 6 digit ID")
+        return
+
+    book_id = int(user_answer6)
+    for book in books:
+        if book.book_id == book_id:
+            entries = history.get(str(book_id), [])
+            if not entries:
+                print("No history found for this book")
+                return
+
+            print(f"Borrow History for {book.title} (ID: {book_id})")
+            for index, entry in enumerate(entries, start=1):
+                borrowed_at = entry.get("borrowed_at") or "Not recorded"
+                returned_at = entry.get("returned_at") or "Not returned yet"
+                print(f"{index}. Borrowed: {borrowed_at}")
+                print(f"   Returned: {returned_at}")
+            return
+
+    print("Book Not Found")
 
 
 def save_program():
     save_books(books)
-
 
 
 def exit_program():
@@ -266,6 +306,9 @@ if __name__ == "__main__":
         
         elif me == 8:
             exit_program()
+
+        elif me == 9:
+            view_borrow_history()
         
         elif me == 6:
             return_book()

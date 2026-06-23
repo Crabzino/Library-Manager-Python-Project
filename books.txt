@@ -4,34 +4,44 @@
         "Author": "James Patterson",
         "Release Year": "2004",
         "Is Borrowed": "Yes",
-        "Book ID": 111111
+        "Book ID": 111111,
+        "Borrow Time": null,
+        "Return Time": null
     },
     {
         "Title": "Treasure Hunter 2",
         "Author": "James Patterson",
         "Release Year": "2005",
         "Is Borrowed": "No",
-        "Book ID": 111112
+        "Book ID": 111112,
+        "Borrow Time": null,
+        "Return Time": null
     },
     {
         "Title": "Treasure Hunter 3",
         "Author": "James Patterson",
         "Release Year": "2006",
         "Is Borrowed": "No",
-        "Book ID": 111113
+        "Book ID": 111113,
+        "Borrow Time": null,
+        "Return Time": null
     },
     {
         "Title": "Treasure Hunter 4",
         "Author": "James Patterson",
         "Release Year": "2006",
         "Is Borrowed": "No",
-        "Book ID": 111114
+        "Book ID": 111114,
+        "Borrow Time": null,
+        "Return Time": null
     },
     {
         "Title": "Rolling Power",
         "Author": "Arnold Bee",
         "Release Year": 1996,
         "Is Borrowed": "No",
-        "Book ID": 121212
+        "Book ID": 121212,
+        "Borrow Time": "2026-06-23 20:26:07",
+        "Return Time": "2026-06-23 20:26:49"
     }
 ]
