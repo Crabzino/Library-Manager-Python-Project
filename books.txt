@@ -1,0 +1,30 @@
+[
+    {
+        "Title": "Treasure Hunter 1",
+        "Author": "James Patterson",
+        "Release Year": "2004",
+        "Is Borrowed": "No",
+        "Book ID": 111111
+    },
+    {
+        "Title": "Treasure Hunter 2",
+        "Author": "James Patterson",
+        "Release Year": "2005",
+        "Is Borrowed": "No",
+        "Book ID": 111112
+    },
+    {
+        "Title": "Treasure Hunter 3",
+        "Author": "James Patterson",
+        "Release Year": "2006",
+        "Is Borrowed": "No",
+        "Book ID": 111113
+    },
+    {
+        "Title": "Treasure Hunter 4",
+        "Author": "James Patterson",
+        "Release Year": "2006",
+        "Is Borrowed": "No",
+        "Book ID": 111114
+    }
+]
